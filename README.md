@@ -29,6 +29,9 @@ I recommend reading the books in this order:
 * [Sync & Async](sync-async/README.md)
 * [ES.Next & Beyond](es-next-beyond/README.md)
 
+## 1st Edition
+*[1st Edition](tree/1st-ed)
+
 ## Publishing
 
 As always, you'll be able to read these books online here entirely for free.
