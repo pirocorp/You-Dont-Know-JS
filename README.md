@@ -30,7 +30,7 @@ I recommend reading the books in this order:
 * [ES.Next & Beyond](es-next-beyond/README.md)
 
 ## 1st Edition
-*[1st Edition](tree/1st-ed)
+* [1st Edition](tree/1st-ed)
 
 ## Publishing
 
