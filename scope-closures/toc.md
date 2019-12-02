@@ -21,14 +21,16 @@
     * Continue The Conversation
 * Chapter 3: Working With Scope
     * Nested Scopes, Revisited
-    * The Global Scope?
-    * Temporal Dead Zone (TDZ)
-    * TODO
-* Chapter 4: Function vs. Block Scope
-    * Scope From Functions
-    * Hiding In Plain Scope
-    * Functions As Scopes
-    * Blocks As Scopes
+    * Why Global Scope?
+    * Where Exactly Is This Global Scope?
+    * When Can I Use A Variable?
+    * Scope Closed
+* Chapter 4: Block Scope
+    * Least Exposure
+    * Hiding In Plain (Function) Scope
+    * Scoping With Blocks
+    * Function Declarations In Blocks
+    * Blocked Over
 * Chapter 5: Hoisting
     * Chicken Or The Egg?
     * The Compiler Strikes Again
