@@ -8,7 +8,7 @@
 
 * Foreword
 * Preface
-* Chapter 1: How Is Scope Compiled?
+* Chapter 1: How Is Scope Determined?
     * About This Book
     * Compiling Code
     * Compiler Speak
@@ -31,16 +31,9 @@
     * Scoping With Blocks
     * Function Declarations In Blocks
     * Blocked Over
-* Chapter 5: Hoisting
-    * Chicken Or The Egg?
-    * The Compiler Strikes Again
-    * Functions First
-* Chapter 6: Scope Closures
-    * Enlightenment
-    * Nitty Gritty
-    * Now I Can See
-    * Loops + Closure
-    * Modules
-* Appendix A: Dynamic Scope
-* Appendix B: Polyfilling Block Scope
-* Appendix C: Lexical-this
+* Chapter 5: Closures
+    * TODO
+* Chapter 6: Module Pattern
+    * TODO
+* Appendix A: Exploring Further
+* Appendix B: Practice
