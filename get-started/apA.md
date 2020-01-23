@@ -3,7 +3,7 @@
 
 In this appendix, we're going to explore some topics from the main chapter text in a bit more detail. Think of this content as an optional preview of some of the more nuanced details covered throughout the rest of the book series.
 
-## Values vs References
+## Values vs. References
 
 In Chapter 2, we introduced the two main types of values: primitives and objects. But we didn't discuss yet one key difference between the two: how these values are assigned and passed around.
 
@@ -37,7 +37,7 @@ console.log(yourName);
 
 See how `yourName` wasn't affected by the re-assignment of `myName` to `"Frank"`? That's because each variable holds its own copy of the value.
 
-By contrast, references are the idea that two or more variables are pointing at the same value, such that modifying this shared value would be reflected by an access via any of those references. In JS, only object values (arrays, objects, functions, etc) are treated as references.
+By contrast, references are the idea that two or more variables are pointing at the same value, such that modifying this shared value would be reflected by an access via any of those references. In JS, only object values (arrays, objects, functions, etc.) are treated as references.
 
 Consider:
 
@@ -57,9 +57,9 @@ console.log(yourAddress.street);
 // 456 TS Ave
 ```
 
-Because the value assigned to `myAddress` is an object, it's held/assigned by reference, and thus the assignment to the `yourAddress` variable is a copy of the reference, not the object value itself. That's why the updated value assigned to the `myAddress.street` is reflected the when we access `yourAddress.street`. `myAddress` and `yourAddress` have copies of the reference to the single shared object, so an update to one is an update to both.
+Because the value assigned to `myAddress` is an object, it's held/assigned by reference, and thus the assignment to the `yourAddress` variable is a copy of the reference, not the object value itself. That's why the updated value assigned to the `myAddress.street` is reflected when we access `yourAddress.street`. `myAddress` and `yourAddress` have copies of the reference to the single shared object, so an update to one is an update to both.
 
-Again, JS chooses the value-copy vs reference-copy behavior based on the value type. Primitives are held by value, objects are held by reference. There's no way to override this in JS, in either direction.
+Again, JS chooses the value-copy vs. reference-copy behavior based on the value type. Primitives are held by value, objects are held by reference. There's no way to override this in JS, in either direction.
 
 ## So Many Function Forms
 
@@ -72,7 +72,7 @@ var awesomeFunction = function(coolThings) {
 };
 ```
 
-The function expression above is referred to as an *anonymous function expression*, since it has no name identifier between the `function` keyword and the `(..)` parameter list. This point confuses many JS developers because as of ES6, JS performs a "name inference" on an anonymous function:
+The function expression here is referred to as an *anonymous function expression*, since it has no name identifier between the `function` keyword and the `(..)` parameter list. This point confuses many JS developers because as of ES6, JS performs a "name inference" on an anonymous function:
 
 ```js
 awesomeFunction.name;
@@ -81,9 +81,9 @@ awesomeFunction.name;
 
 The `name` property of a function will reveal either its directly given name (in the case of a declaration) or its inferred name in the case of an anonymous function expression. That value is generally used by developer tools when inspecting a function value or when reporting an error stack trace.
 
-So even an anonymous function expression *might* get a name. However, name inference only happens in limited cases such as when the function expression is assigned (with `=`). If you pass a function expression as an argument to a function call, for example, no name inference occurs, the `name` property will be an empty string, and the developer console will usually report "(anonymous function)".
+So even an anonymous function expression *might* get a name. However, name inference only happens in limited cases such as when the function expression is assigned (with `=`). If you pass a function expression as an argument to a function call, for example, no name inference occurs; the `name` property will be an empty string, and the developer console will usually report "(anonymous function)".
 
-Even if a name is inferred, **it's still an anonymous function.** Why? Because the inferred name is a metadata string value, not an available identifier to refer to the function. An anonymous function doesn't have an identifier to use to refer to itself from inside itself -- for recursion, event unbinding, etc.
+Even if a name is inferred, **it's still an anonymous function.** Why? Because the inferred name is a metadata string value, not an available identifier to refer to the function. An anonymous function doesn't have an identifier to use to refer to itself from inside itself—for recursion, event unbinding, etc.
 
 Compare the anonymous function expression form to:
 
@@ -99,7 +99,7 @@ awesomeFunction.name;
 // "someName"
 ```
 
-This function expression is a *named function expression*, since the identifier `someName` is directly associated with the function expression at compile time; the association with the identifier `awesomeFunction` still doesn't happen until runtime at the time of that statement. Those two identifiers don't have to match; sometimes it makes sense to have them be different, othertimes it's better to have them be the same.
+This function expression is a *named function expression*, since the identifier `someName` is directly associated with the function expression at compile time; the association with the identifier `awesomeFunction` still doesn't happen until runtime at the time of that statement. Those two identifiers don't have to match; sometimes it makes sense to have them be different, other times it's better to have them be the same.
 
 Notice also that the explicit function name, the identifier `someName`, takes precedence when assigning a *name* for the `name` property.
 
@@ -109,7 +109,7 @@ In my opinion, if a function exists in your program, it has a purpose; otherwise
 
 If a function has a name, you the code author should include that name in the code, so that the reader does not have to infer that name from reading and mentally executing that function's source code. Even a trivial function body like `x * 2` has to be read to infer a name like "double" or "multBy2"; that brief extra mental work is unnecessary when you could just take a second to name the function "double" or "multBy2" *once*, saving the reader that repeated mental work every time it's read in the future.
 
-There are, regrettably in some respects, many other function definition forms in JS as of late 2019 (maybe more in the future!).
+There are, regrettably in some respects, many other function definition forms in JS as of early 2020 (maybe more in the future!).
 
 Here are some more declaration forms:
 
@@ -156,9 +156,9 @@ someOperation( x => x * 2 );
 
 Keep in mind that arrow function expressions are **syntactically anonymous**, meaning the syntax doesn't provide a way to provide a direct name identifier for the function. The function expression may get an inferred name, but only if it's one of the assignment forms, not in the (more common!) form of being passed as a function call argument (as in the last line of the snippet).
 
-Since I don't think anonymous functions are a good idea to use frequently in your programs, I'm not a fan of using the `=>` arrow function form. This kind of function actually has a specific purpose -- handling the `this` keyword lexically -- but that doesn't mean we should use it for every function we write. Use the most appropriate tool for each job.
+Since I don't think anonymous functions are a good idea to use frequently in your programs, I'm not a fan of using the `=>` arrow function form. This kind of function actually has a specific purpose (i.e., handling the `this` keyword lexically), but that doesn't mean we should use it for every function we write. Use the most appropriate tool for each job.
 
-Functions can also be specified in class definitions and object literal definitions. They're typically referred to as "methods" when in these forms, though in JS this term doesn't have much observable difference over "function".
+Functions can also be specified in class definitions and object literal definitions. They're typically referred to as "methods" when in these forms, though in JS this term doesn't have much observable difference over "function":
 
 ```js
 class SomethingKindaGreat {
@@ -231,7 +231,7 @@ if (x == true) {
 }
 ```
 
-Oops. So what is the `if` statement actually doing? This is the more accurate mental model.
+Oops. So what is the `if` statement actually doing? This is the more accurate mental model:
 
 ```js
 var x = "hello";
@@ -247,7 +247,7 @@ if (Boolean(x) === true) {
 }
 ```
 
-Since the `Boolean(..)` function always returns a value of type boolean, the `==` vs `===` in that above snippet is irrelevant; they'll both do the same thing. But the important part is to see that before the comparison, a coercion occurs, from whatever type `x` currently is, to boolean.
+Since the `Boolean(..)` function always returns a value of type boolean, the `==` vs `===` in this snippet is irrelevant; they'll both do the same thing. But the important part is to see that before the comparison, a coercion occurs, from whatever type `x` currently is, to boolean.
 
 You just can't get away from coercions in JS comparisons. Buckle down and learn them.
 
@@ -255,7 +255,7 @@ You just can't get away from coercions in JS comparisons. Buckle down and learn 
 
 In Chapter 3, we introduced prototypes and showed how we can link objects through a prototype chain.
 
-Another way of wiring up such prototype linkages served as the (honestly, ugly) predecessor to the elegance of the ES6 `class` system (see Chapter 2), and is referred to as prototypal classes.
+Another way of wiring up such prototype linkages served as the (honestly, ugly) predecessor to the elegance of the ES6 `class` system (see Chapter 2, "Classes"), and is referred to as prototypal classes.
 
 | TIP: |
 | :--- |
@@ -276,9 +276,9 @@ mathClass.welcome();
 // Welcome, students!
 ```
 
-Here, a `mathClass` object is linked via its prototype to a `Classroom` object. Through this link, the `mathClass.welcome()` function call is delegated to the method defined on `Classroom`.
+Here, a `mathClass` object is linked via its prototype to a `Classroom` object. Through this linkage, the function call `mathClass.welcome()` is delegated to the method defined on `Classroom`.
 
-The prototypal class pattern would have labeled this delegation behavior "inheritance", and alternately have defined it (with the same behavior) as:
+The prototypal class pattern would have labeled this delegation behavior "inheritance," and alternatively have defined it (with the same behavior) as:
 
 ```js
 function Classroom() {
@@ -295,13 +295,13 @@ mathClass.welcome();
 // Welcome, students!
 ```
 
-All functions by default reference an empty object at a property named `prototype`. Despite the confusing naming, this is **not** the function's *prototype* -- where the function is prototype linked to -- but rather the prototype object to *link to* when other objects are created by calling the function with `new`.
+All functions by default reference an empty object at a property named `prototype`. Despite the confusing naming, this is **not** the function's *prototype* (where the function is prototype linked to), but rather the prototype object to *link to* when other objects are created by calling the function with `new`.
 
-We add a `welcome` property to that empty `Classroom.prototype` object, pointing at a `hello()` function.
+We add a `welcome` property on that empty object (called `Classroom.prototype`), pointing at the `hello()` function.
 
 Then `new Classroom()` creates a new object (assigned to `mathClass`), and prototype links it to the existing `Classroom.prototype` object.
 
-Though `mathClass` does not have a `welcome()` property/function, it successfully delegates to `Classroom.prototype.welcome()`.
+Though `mathClass` does not have a `welcome()` property/function, it successfully delegates to the function `Classroom.prototype.welcome()`.
 
 This "prototypal class" pattern is now strongly discouraged, in favor of using ES6's `class` mechanism:
 
