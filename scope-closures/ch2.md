@@ -1,11 +1,11 @@
 # You Don't Know JS Yet: Scope & Closures - 2nd Edition
-# Chapter 2: Understanding Lexical Scope
+# Chapter 2: Illustrating Lexical Scope
 
-In Chapter 1, we explored how scope is determined at code compilation, a model called "lexical scope".
+In Chapter 1, we explored how scope is determined during code compilation, a model called "lexical scope".
 
-Before we get to the nuts and bolts of how using lexical scope in our programs, we should make sure we have a good conceptual foundation for how scope works. This chapter will illustrate *scope* with several metaphors. The goal here is to *think* about how your program is handled by the JS engine in ways that more closely match how the JS engine actually works.
+To properly *reason* about our programs, it's important to have a solid conceptual foundation of how scope works. This chapter will illustrate *scope* with several metaphors. The goal here is to *think* about how your program is handled by the JS engine in ways that more closely align with how the JS engine actually works.
 
-## Buckets, and Bubbles, and Marbles... Oh My!
+## Marbles, and Buckets, and Bubbles... Oh My!
 
 One metaphor I've found effective in understanding scope is sorting colored marbles into buckets of their matching color.
 
@@ -13,7 +13,7 @@ Imagine you come across a pile of marbles, and notice that all the marbles are c
 
 In this metaphor, the marbles are the variables in our program. The buckets are scopes (functions and blocks), which we just conceptually assign individual colors for our discussion purposes. The color of each marble is thus determined by which *color* scope we find the marble originally created in.
 
-Let's annotate the program example from Chapter 1 with scope color labels:
+Let's annotate the running program example from Chapter 1 with scope color labels:
 
 ```js
 // outer/global scope: RED
@@ -45,11 +45,11 @@ console.log(nextStudent);
 
 We've designated 3 scope colors with code comments: RED (outermost global scope), BLUE (scope of function `getStudentName(..)`), and GREEN (scope of/inside the `for` loop). But it still may be difficult to recognize the boundaries of these scope buckets when looking at a code listing.
 
-Figure 1 tries to make the scope boundaries easier to visualize by drawing colored bubbles around each scope:
+Figure 2 helps visualize the boundaries of this program's scopes by drawing colored bubbles (aka, buckets) around each:
 
 <figure>
-    <img src="fig1.png" width="500" alt="Nested Scope Bubbles" align="center">
-    <figcaption><em>Fig. 1: Nested Scope Bubbles</em></figcaption>
+    <img src="images/fig2.png" width="500" alt="Colored Scope Bubbles" align="center">
+    <figcaption><em>Fig. 2: Colored Scope Bubbles</em></figcaption>
 </figure>
 
 1. **Bubble 1** (RED) encompasses the global scope, which has three identifiers/variables: `students` (line 1), `getStudentName` (line 8), and `nextStudent` (line 16).
@@ -57,6 +57,10 @@ Figure 1 tries to make the scope boundaries easier to visualize by drawing color
 2. **Bubble 2** (BLUE) encompasses the scope of the function `getStudentName(..)` (line 8), which has just one identifier/variable: the parameter `studentID` (line 8).
 
 3. **Bubble 3** (GREEN) encompasses the scope of the `for`-loop (line 9), which has just one identifier/variable: `student` (line 9).
+
+| NOTE: |
+| :--- |
+| Technically, the parameter `studentID` is not exactly in the BLUE(2) scope. We'll unwind that confusion in "Implied Scopes" in Appendix A. |
 
 Scope bubbles are determined during compilation based on where the functions / blocks of scope are written, the nesting inside each other, etc. Each scope bubble is entirely contained within its parent scope bubble -- a scope is never partially in two different outer scopes.
 
@@ -68,13 +72,13 @@ Each marble (variable/identifier) is colored based on which bubble (bucket) it's
 
 As the JS engine processes a program (during compilation), and finds a declaration for a variable, it essentially asks, "which *color* scope (bubble, bucket) am I currently in?" The variable is designated as that same *color*, meaning it belongs to that bucket/bubble.
 
-The GREEN bucket is wholly nested inside of the BLUE bucket, and similarly the BLUE bucket is wholly nested inside the RED bucket. Scopes can nest inside each other as shown, to any depth of nesting as your program needs.
+The GREEN(3) bucket is wholly nested inside of the BLUE(2) bucket, and similarly the BLUE(2) bucket is wholly nested inside the RED(1) bucket. Scopes can nest inside each other as shown, to any depth of nesting as your program needs.
 
-References (non-declarations) to variables/identifiers can be made if their declarations are either in the current scope, or any scope above/outside the current scope, but never for declarations from lower/nested scopes. So an expression in the RED bucket only has access to RED marbles, not BLUE or GREEN. An expression in the BLUE bucket can reference either BLUE or RED marbles, not GREEN. And an expression in the GREEN bucket has access to RED, BLUE, and GREEN marbles.
+References (non-declarations) to variables/identifiers can be made if their declarations are either in the current scope, or any scope above/outside the current scope, but never for declarations from lower/nested scopes. So an expression in the RED(1) bucket only has access to RED(1) marbles, **not** BLUE(2) or GREEN(3). An expression in the BLUE(2) bucket can reference either BLUE(2) or RED(1) marbles, **not** GREEN(3). And an expression in the GREEN(3) bucket has access to RED(1), BLUE(2), and GREEN(3) marbles.
 
-We can conceptualize the process of determining these non-declaration marble colors during runtime as a lookup. Since the `students` variable reference in the `for`-loop statement on line 9 is not a declaration, it has no color. So we ask the current scope bucket (BLUE) if it has a marble matching that name. Since it doesn't, the lookup continues with the next outer/containing scope (RED). The RED bucket has a marble of the name `students`, so the loop-statement's `students` variable is determined to be a RED marble.
+We can conceptualize the process of determining these non-declaration marble colors during runtime as a lookup. Since the `students` variable reference in the `for`-loop statement on line 9 is not a declaration, it has no color. So we ask the current BLUE(2) scope bucket if it has a marble matching that name. Since it doesn't, the lookup continues with the next outer/containing scope: RED(1). The RED(1) bucket has a marble of the name `students`, so the loop-statement's `students` variable is determined to be a RED(1) marble.
 
-The `if (student.id == studentID)` on line 10 is similarly determined to reference a GREEN marble named `student` and a BLUE marble `studentID`.
+The `if (student.id == studentID)` on line 10 is similarly determined to reference a GREEN(3) marble named `student` and a BLUE(2) marble `studentID`.
 
 | NOTE: |
 | :--- |
@@ -84,7 +88,7 @@ The key take-aways from marbles & buckets (and bubbles!):
 
 * Variables are declared in certain scopes, which can be thought of as colored marbles in matching-color buckets.
 
-* Any reference to a variable of that same name in that scope, or any deeper nested scope, will be a marble of that same color -- unless an intervening scope "shadows" the variable declaration; see Chapter 3 "Shadowing.
+* Any reference to a variable of that same name in that scope, or any deeper nested scope, will be a marble of that same color -- unless an intervening scope "shadows" the variable declaration; see "Shadowing" in Chapter 3.
 
 * The determination of colored buckets, and the marbles they contain, happens during compilation. This information is used for variable (marble color) "lookups" during code execution.
 
@@ -204,9 +208,9 @@ When it comes time to execute the `getStudentName()` function, *Engine* asks for
 
 The function scope for `getStudentName(..)` is nested inside the global scope. The block scope of the `for`-loop is similarly nested inside that function scope. Scopes can be lexically nested to any arbitrary depth as the program defines.
 
-Each scope gets its own *Scope Manager* instance each time that scope is executed (one or more times). Each scope automatically has all its identifiers registered (this is called "variable hoisting"; see Chapter 3).
+Each scope gets its own *Scope Manager* instance each time that scope is executed (one or more times). Each scope automatically has all its identifiers registered (this is called "variable hoisting"; see Chapter 5).
 
-At the beginning of a scope, if any identifier came from a `function` declaration, that variable is automatically initialized to its associated function reference. And if any identifier came from a `var` declaration (as opposed to `let` / `const`), that variable is automatically initialized to `undefined` so that it can be used; otherwise, the variable remains uninitialized (aka, in its "TDZ", see Chapter 3) and cannot be used until its declaration-and-initialization are executed.
+At the beginning of a scope, if any identifier came from a `function` declaration, that variable is automatically initialized to its associated function reference. And if any identifier came from a `var` declaration (as opposed to `let` / `const`), that variable is automatically initialized to `undefined` so that it can be used; otherwise, the variable remains uninitialized (aka, in its "TDZ", see Chapter 5) and cannot be used until its declaration-and-initialization are executed.
 
 In the `for (let student of students) {` statement, `students` is a *source* reference that must be looked up. But how will that lookup be handled, since the scope of the function will not find such an identifier.
 
@@ -228,13 +232,30 @@ One of the most important aspects of lexical scope is that any time an identifie
 
 When *Engine* exhausts all *lexically available* scopes and still cannot resolve the lookup of an identifier, an error condition then exists. However, depending on the mode of the program (strict-mode or not) and the role of the variable (i.e., *target* vs. *source*; see Chapter 1), this error condition will be handled differently.
 
-If the variable is a *source*, an unresolved identifier lookup is considered an undeclared (unknown, missing) variable, which results in a `ReferenceError` being thrown. Also, if the variable is a *target*, and the code at that point is running in strict-mode, the variable is considered undeclared and throws a `ReferenceError`.
+#### Undefined Mess
 
-| WARNING: |
-| :--- |
-| The error message for an undeclared variable condition, in most JS environments, will likely say, "Reference Error: XYZ is not defined". The phrase "not defined" seems almost identical to the term "undefined", as far as the English language goes. But these two are very different in JS, and this error message unfortunately creates a likely confusion. "Not defined" really means "not declared", or rather "undeclared", as in a variable that was never formally declared in any *lexically available* scope. By contrast, "undefined" means a variable was found (declared), but the variable otherwise has no value in it at the moment, so it defaults to the `undefined` value. Yes, this terminology mess is confusing and terribly unfortunate. |
+If the variable is a *source*, an unresolved identifier lookup is considered an undeclared (unknown, missing) variable, which always results in a `ReferenceError` being thrown. Also, if the variable is a *target*, and the code at that point is running in strict-mode, the variable is considered undeclared and similarly throws a `ReferenceError`.
 
-However, if the variable is a *target* and strict-mode is not in effect, a confusing and surprising legacy behavior occurs. The extremely unfortunate outcome is that the global scope's *Scope Manager* will just create an **accidental global variable** to fulfill that target assignment!
+The error message for an undeclared variable condition, in most JS environments, will likely report, "Reference Error: XYZ is not defined". The phrase "not defined" seems almost identical to the term "undefined", as far as the English language goes. But these two are very different in JS, and this error message unfortunately creates a common confusion.
+
+"Not defined" really means "not declared", or rather "undeclared", as in a variable that has no matching formal declaration in any *lexically available* scope. By contrast, "undefined" really means a variable was found (declared), but the variable otherwise has no value in it at the moment, so it defaults to the `undefined` value.
+
+To perpetuate the confusion even further, JS's `typeof` operator returns the string `"undefined"` for variables of either sort:
+
+```js
+var studentName;
+typeof studentName;     // "undefined"
+
+typeof doesntExist;     // "undefined"
+```
+
+These two variable references are in very different situations, but JS sure does muddy the waters. The terminology mess is confusing and terribly unfortunate. Unfortunately, JS developers just have to pay close attention to not
+
+#### Global... What!?
+
+If the variable is a *target* and strict-mode is not in effect, a confusing and surprising legacy behavior kicks in. The deeply unfortunate outcome is that the global scope's *Scope Manager* will just create an **accidental global variable** to fulfill that target assignment!
+
+Consider:
 
 ```js
 function getStudentName() {
@@ -248,17 +269,31 @@ console.log(nextStudent);
 // "Suzy" -- oops, an accidental-global variable!
 ```
 
+Here's how that *conversation* would go:
+
+> ***Engine***: Hey *Scope Manager* (for the function), I have a *target* reference for `nextStudent`, ever heard of it?
+
+> ***(Function) Scope Manager***: Nope, never heard of it. Try the next outer scope.
+
+> ***Engine***: Hey *Scope Manager* (for the global scope), I have a *target* reference for `nextStudent`, ever heard of it?
+
+> ***(Global) Scope Manager***: Nope, but since we're in non-strict-mode, I helped you out and just created a global variable for you, here you go!
+
 Yuck.
 
-This sort of accident (almost certain to lead to bugs eventually) is a great example of the protections of strict-mode, and why it's such a bad idea not to use it. Never rely on accidental global variables like that. Always use strict-mode, and always formally declare your variables. You'll then get a helpful `ReferenceError` if you ever mistakenly try to assign to a not-declared variable.
+This sort of accident (almost certain to lead to bugs eventually) is a great example of the protections of strict-mode, and why it's such a bad idea to *not* use it. In strict-mode, the ***Global Scope Manager*** would instead have responded:
+
+> ***(Global) Scope Manager***: Nope, never heard of it. Sorry, but I've got to throw a `ReferenceError`.
+
+Never rely on accidental global variables. Always use strict-mode, and always formally declare your variables. You'll then get a helpful `ReferenceError` if you ever mistakenly try to assign to a not-declared variable.
 
 ### Building On Metaphors
 
-To visualize nested scope resolution, yet another useful metaphor may be an office building:
+To visualize nested scope resolution, yet another useful metaphor may be an office building, such as Figure 3:
 
 <figure>
-    <img src="fig2.png" width="250" alt="Scope &quot;Building&quot;" align="center">
-    <figcaption><em>Fig. 2: Scope "Building"</em></figcaption>
+    <img src="images/fig3.png" width="250" alt="Scope &quot;Building&quot;" align="center">
+    <figcaption><em>Fig. 3: Scope "Building"</em></figcaption>
     <br><br>
 </figure>
 
@@ -268,8 +303,8 @@ You resolve a *target* or *source* variable reference by first looking on the cu
 
 ## Continue The Conversation
 
-By this point, hopefully you feel more solid on what scope is and how the JS engine determines it while compiling your code.
+By this point, you should feel more solid with what scope is and how the JS engine determines it from your code.
 
-Before *continuing*, go find some code in one of your projects and run through the conversations. If you find yourself confused or tripped up, spend time reviewing this material.
+Before *continuing*, go find some code in one of your projects and run through the conversations. Seriously, actually say it out loud. Find a friend and practice each role with them. If you find yourself confused or tripped up, spend more time reviewing this material.
 
-As we move forward, we want to look in much more detail at how we use lexical scope in our programs.
+As we move to the next chapter, we'll explore how the collection of lexical scopes in a program are connected in a chain.
