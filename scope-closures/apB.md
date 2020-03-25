@@ -1,29 +1,29 @@
 # You Don't Know JS Yet: Scope & Closures - 2nd Edition
 # Appendix B: Practice
 
-This appendix aims to give you a few interesting exercises to test and solidify your understanding of the main topics from this book. It's a good idea to try out the exercises yourself -- in an actual code editor! -- instead of skipping straight to the solutions at the end. No cheating!
+This appendix aims to give you some challenging and interesting exercises to test and solidify your understanding of the main topics from this book. It's a good idea to try out the exercises yourself—in an actual code editor!—instead of skipping straight to the solutions at the end. No cheating!
 
-These exercises don't have a specific right answer that you have to get exactly. Your approach may differ some (or a lot!) from the solutions I present, and that's OK.
+These exercises don't have a specific right answer that you have to get exactly. Your approach may differ some (or a lot!) from the solutions presented, and that's OK.
 
-I'm not judging you on how you write your code. My hope is that you come away from this book feeling confident that you can tackle these sorts of coding tasks built on a strong foundation of knowledge. That's the only objective, here. If you're happy with your code, I am, too!
+There's no judging you on how you write your code. My hope is that you come away from this book feeling confident that you can tackle these sorts of coding tasks built on a strong foundation of knowledge. That's the only objective, here. If you're happy with your code, I am, too!
 
 ## Buckets of Marbles
 
-Remember Figure 2 from back in Chapter 2, the one with the colored bubbles/buckets?
+Remember Figure 2 from back in Chapter 2?
 
 <figure>
     <img src="images/fig2.png" width="300" alt="Colored Scope Bubbles" align="center">
-    <figcaption><em>Fig. 2 (repeat): Colored Scope Bubbles</em></figcaption>
+    <figcaption><em>Fig. 2 (Ch. 2): Colored Scope Bubbles</em></figcaption>
     <br><br>
 </figure>
 
-This exercise asks you to write a program -- any program! -- that contains nested functions and block scopes, which satisifies these constraints:
+This exercise asks you to write a program—any program!—that contains nested functions and block scopes, which satisfies these constraints:
 
-* If you color all the scopes (including the global scope!) different colors, you need at least 6 colors. Make sure to add a code comment labeling each scope with its color.
+* If you color all the scopes (including the global scope!) different colors, you need at least six colors. Make sure to add a code comment labeling each scope with its color.
 
     BONUS: identify any implied scopes your code may have.
 
-* Each scope has at least 1 identifier.
+* Each scope has at least one identifier.
 
 * Contains at least two function scopes and at least two block scopes.
 
@@ -33,9 +33,9 @@ This exercise asks you to write a program -- any program! -- that contains neste
 
 | TIP: |
 | :--- |
-| You *can* just write junk foo/bar/baz type code for this exercise, but I suggest you try to come up with some sort of non-trivial code that at least does something kind of reasonable. |
+| You *can* just write junk foo/bar/baz-type code for this exercise, but I suggest you try to come up with some sort of non-trivial real'ish code that at least does something kind of reasonable. |
 
-Try out the exercise for yourself, then check out the suggested solution at the end of this appendix.
+Try the exercise for yourself, then check out the suggested solution at the end of this appendix.
 
 ## Closure (PART 1)
 
@@ -51,7 +51,7 @@ factorize(11);      // [ 11 ]
 factorize(12);      // [ 3, 2, 2 ] --> 3*2*2=12
 ```
 
-Here's a decent implementation of `isPrime(..)` that I adapted from the Math.js library:
+Here's an implementation of `isPrime(..)`, adapted from the Math.js library: [^MathJSisPrime]
 
 ```js
 function isPrime(v) {
@@ -70,8 +70,6 @@ function isPrime(v) {
     return true;
 }
 ```
-
-Reference: https://github.com/josdejong/mathjs/blob/develop/src/function/utils/isPrime.js
 
 And here's a somewhat basic implementation of `factorize(..)` (not to be confused with `factorial(..)` from Chapter 6):
 
@@ -97,33 +95,33 @@ function factorize(v) {
 
 If you were to call `isPrime(4327)` multiple times in a program, you can see that it would go through all its dozens of comparison/computation steps every time. If you consider `factorize(..)`, it's calling `isPrime(..)` many times as it computes the list of factors. And there's a good chance most of those calls are repeats. That's a lot of wasted work!
 
-The first part of this exercise is to use closure to implement a cache to remember the results of `isPrime(..)`, so that the primality (`true` or `false`) of a given number is only ever computed once. Hint: we essentially showed this sort of caching in Chapter 6 with `factorial(..)`.
+The first part of this exercise is to use closure to implement a cache to remember the results of `isPrime(..)`, so that the primality (`true` or `false`) of a given number is only ever computed once. Hint: we already showed this sort of caching in Chapter 6 with `factorial(..)`.
 
 If you look at `factorize(..)`, it's implemented with recursion, meaning it calls itself repeatedly. That again means we may likely see a lot of wasted calls to compute prime factors for the same number. So the second part of the exercise is to use the same closure cache technique for `factorize(..)`.
 
 Use separate closures for caching of `isPrime(..)` and `factorize(..)`, rather than putting them inside a single scope.
 
-Try out the exercise for yourself, then check out the suggested solution at the end of this appendix.
+Try the exercise for yourself, then check out the suggested solution at the end of this appendix.
 
 ### A Word About Memory
 
 I want to share a little quick note about this closure cache technique and the impacts it has on your application's performance.
 
-We can see that in saving the repeated calls, we improve computation speed, in some cases by a dramatic amount. But this usage of closure is making an explicit tradeoff that you should be very aware of.
+We can see that in saving the repeated calls, we improve computation speed (in some cases, by a dramatic amount). But this usage of closure is making an explicit trade-off that you should be very aware of.
 
-The tradeoff is memory. We're essentially growing our cache (in memory) unboundedly. If the functions in question were called many millions of times with unique inputs, we'd be chewing up a lot of memory. This can definitely be worth the expense, but only if we think it's likely to see the repetition of common inputs so that we're often taking advantage of the cache.
+The trade-off is memory. We're essentially growing our cache (in memory) unboundedly. If the functions in question were called many millions of times with mostly unique inputs, we'd be chewing up a lot of memory. This can definitely be worth the expense, but only if we think it's likely we see repetition of common inputs so that we're taking advantage of the cache.
 
-If every single call will have a unique input, and the cache is essentially never *used* to any benefit, this is an inappropriate technique that wastes memory.
+If most every call will have a unique input, and the cache is essentially never *used* to any benefit, this is an inappropriate technique to employ.
 
 It also might be a good idea to have a more sophisticated caching approach, such as an LRU (least recently used) cache, that limits its size; as it runs up to the limit, an LRU evicts the values that are... well, least recently used!
 
-The downside here is that LRU is quite non-trivial in its own right. You'll want to use a highly optimized implementation of LRU, and be keenly aware of all the tradeoffs at play.
+The downside here is that LRU is quite non-trivial in its own right. You'll want to use a highly optimized implementation of LRU, and be keenly aware of all the trade-offs at play.
 
 ## Closure (PART 2)
 
 In this exercise, we're going to again practive closure by defining a `toggle(..)` utility that gives us a value toggler.
 
-You will pass one or more values (as arguments) into `toggle(..)`, and get back a function. That returned function will alternate/rotate between all the passed in values in order, one at a time, as it's called repeatedly.
+You will pass one or more values (as arguments) into `toggle(..)`, and get back a function. That returned function will alternate/rotate between all the passed-in values in order, one at a time, as it's called repeatedly.
 
 ```js
 function toggle(/* .. */) {
@@ -136,18 +134,20 @@ var speed = toggle("slow","medium","fast");
 
 hello();      // "hello"
 hello();      // "hello"
+
 onOff();      // "on"
 onOff();      // "off"
 onOff();      // "on"
+
 speed();      // "slow"
 speed();      // "medium"
 speed();      // "fast"
 speed();      // "slow"
 ```
 
-The corner case of passing in no values to `toggle(..)` is not important; such a toggler instance can just always return `undefined`.
+The corner case of passing in no values to `toggle(..)` is not very important; such a toggler instance could just always return `undefined`.
 
-Try out the exercise for yourself, then check out the suggested solution at the end of this appendix.
+Try the exercise for yourself, then check out the suggested solution at the end of this appendix.
 
 ## Closure (PART 3)
 
@@ -186,7 +186,7 @@ calc("5");     // 5
 calc("=");     // 0
 ```
 
-Since this usage is a little clumsy, here's a `useCalc(..)` helper, that runs the calculator with characters one at a time from a string, and computes the display each time:
+Since this usage is a bit clumsy, here's a `useCalc(..)` helper, that runs the calculator with characters one at a time from a string, and computes the display each time:
 
 ```js
 function useCalc(calc,keys) {
@@ -218,7 +218,7 @@ useCalc(calc,"51=");            // 51
 
 The most sensible usage of this `useCalc(..)` helper is to always have "=" be the last character entered.
 
-Some of the formatting of the totals displayed by the calculator require special handling. I'm providing this `formatTotal(..)` function, which your calculator should use whenever it's going to return a current computed total:
+Some of the formatting of the totals displayed by the calculator require special handling. I'm providing this `formatTotal(..)` function, which your calculator should use whenever it's going to return a current computed total (after an `"="` is entered):
 
 ```js
 function formatTotal(display) {
@@ -265,9 +265,9 @@ function formatTotal(display) {
 
 Don't worry too much about how `formatTotal(..)` works. Most of its logic is a bunch of handling to limit the calculator display to 11 characters max, even if negatives, repeating decimals, or even "e+" exponential notation is required.
 
-Again, don't get too mired in the mud around the calculator behavior. Focus on the *memory* of closure.
+Again, don't get too mired in the mud around calculator-specific behavior. Focus on the *memory* of closure.
 
-Try out the exercise for yourself, then check out the suggested solution at the end of this appendix.
+Try the exercise for yourself, then check out the suggested solution at the end of this appendix.
 
 ## Modules
 
@@ -275,11 +275,11 @@ This exercise is to convert the calculator from Closure (PART 3) into a module.
 
 We're not adding any additional functionality to the calculator, only changing its interface. Instead of calling a single function `calc(..)`, we'll be calling specific methods on the public API for each "keypress" of our calculator. The outputs stay the same.
 
-This module should be expressed as a classic module form factory function called `calculator()`, instead of a singleton IIFE, so that multiple calculators could be created if necessary.
+This module should be expressed as a classic module factory function called `calculator()`, instead of a singleton IIFE, so that multiple calculators can be created if desired.
 
 The public API should include the following methods:
 
-* `number(..)` (with the character/number "pressed")
+* `number(..)` (input: the character/number "pressed")
 * `plus()`
 * `minus()`
 * `mult()`
@@ -339,7 +339,7 @@ useCalc(calc,"+3=");            // +3=ERR
 useCalc(calc,"51=");            // 51
 ```
 
-Try out the exercise for yourself, then check out the suggested solution at the end of this appendix.
+Try the exercise for yourself, then check out the suggested solution at the end of this appendix.
 
 As you work on this exercise, also spend some time considering the pros/cons of representing the calculator as a module as opposed to the closure-function approach from the previous exercise.
 
@@ -349,15 +349,15 @@ BONUS #2: try converting your module to other module formats, including: UMD, Co
 
 ## Suggested Solutions
 
-Hopefully you've tried out the exercises before you're reading this part. No cheating!
+Hopefully you've tried out the exercises before you're reading this far. No cheating!
 
-Remember, these suggested solutions are just a few of a whole bunch of different ways to approach the problems. They're not "the right answer", but they are intended to be illustrative of a reasonable way to approach each exercise.
+Remember, each suggested solution is just one of a bunch of different ways to approach the problems. They're not "the right answer," but they do illustrate a reasonable way to approach each exercise.
 
 The most important benefit you can get from reading these suggested solutions is to compare them to your code and analyze why we each made similar or different choices. Don't get into too much bikeshedding; try to stay focused on the main topic rather than the small details.
 
 ### Suggested: Buckets of Marbles
 
-The "Buckets of Marbles" exercise could be solved like this:
+The *Buckets of Marbles Exercise* can be solved like this:
 
 ```js
 // RED(1)
@@ -405,7 +405,7 @@ findPrimes(howMany);
 
 ### Suggested: Closure (PART 1)
 
-The *Closure Exercise (PART 1)* `isPrime(..)` / `factorize(..)` could be solved like this:
+The *Closure Exercise (PART 1)* for `isPrime(..)` and `factorize(..)`, can be solved like this:
 
 ```js
 var isPrime = (function isPrime(v){
@@ -453,19 +453,19 @@ var factorize = (function factorize(v){
 })();
 ```
 
-The general approach I used here for each utility was:
+The general steps I used for each utility:
 
-1. wrap an IIFE to define the scope for the cache variable to reside
+1. Wrap an IIFE to define the scope for the cache variable to reside.
 
-2. on each underlying call, first check the cache and if present, return
+2. In the underlying call, first check the cache, and if a result is already known, return.
 
-3. at each place where a `return` was happening originally, assign to the cache and just return the results of that assignment operation -- this is a space savings trick mostly just for brevity in the book.
+3. At each place where a `return` was happening originally, assign to the cache and just return the results of that assignment operation—this is a space savings trick mostly just for brevity in the book.
 
-I also renamed the inner function from `factorize(..)` to `findFactors(..)`. That's not technically necessary, but it helps it make clearer which function the recursive calls are.
+I also renamed the inner function from `factorize(..)` to `findFactors(..)`. That's not technically necessary, but it helps it make clearer which function the recursive calls invoke.
 
 ### Suggested: Closure (PART 2)
 
-The *Closure Exercise (PART 2)* `toggle(..)` could be solved like this:
+The *Closure Exercise (PART 2)* `toggle(..)` can be solved like this:
 
 ```js
 function toggle(...vals) {
@@ -489,9 +489,11 @@ var speed = toggle("slow","medium","fast");
 
 hello();      // "hello"
 hello();      // "hello"
+
 onOff();      // "on"
 onOff();      // "off"
 onOff();      // "on"
+
 speed();      // "slow"
 speed();      // "medium"
 speed();      // "fast"
@@ -500,7 +502,7 @@ speed();      // "slow"
 
 ### Suggested: Closure (PART 3)
 
-The *Closure Exercise (PART 3)* `calculator()` could be solved like this:
+The *Closure Exercise (PART 3)* `calculator()` can be solved like this:
 
 ```js
 // from earlier:
@@ -583,11 +585,11 @@ useCalc(calc,"51=");            // 51
 
 | NOTE: |
 | :--- |
-| Remember: this exercise is about closure. Don't focus too much on the actual mechanics of a calculator, and more on whether you are properly *remembering* the calculator state across function calls. |
+| Remember: this exercise is about closure. Don't focus too much on the actual mechanics of a calculator, but rather on whether you are properly *remembering* the calculator state across function calls. |
 
 ### Suggested: Modules
 
-The Modules exercise `calculator()` could be solved like this:
+The *Modules Exercise* `calculator()` can be solved like this:
 
 ```js
 // from earlier:
@@ -603,18 +605,10 @@ function calculator() {
     var publicAPI = {
         number,
         eq,
-        plus() {
-            return operator("+");
-        },
-        minus() {
-            return operator("-");
-        },
-        mult() {
-            return operator("*");
-        },
-        div() {
-            return operator("/");
-        }
+        plus() { return operator("+"); },
+        minus() { return operator("-"); },
+        mult() { return operator("*"); },
+        div() { return operator("/"); }
     };
 
     return publicAPI;
@@ -684,3 +678,7 @@ useCalc(calc,"1/0=");           // 1/0=ERR
 useCalc(calc,"+3=");            // +3=ERR
 useCalc(calc,"51=");            // 51
 ```
+
+That's it for this book, congratulations on your achievement! When you're ready, move on to Book 3, *Objects & Classes*.
+
+[^MathJSisPrime]: *Math.js: isPrime(..)*, https://github.com/josdejong/mathjs/blob/develop/src/function/utils/isPrime.js, 3 March 2020.
